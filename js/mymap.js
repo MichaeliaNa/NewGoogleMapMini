@@ -1,21 +1,23 @@
       var map, infoWindow;
       function initMap() {
-        var pos = {lat: -25.363, lng: 131.044};
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: pos
-        });
         infoWindow = new google.maps.InfoWindow;
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
-            pos = {
+            var pos = {
               lat: position.coords.latitude,
               lng: position.coords.longitude
             };
-
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
+            map = new google.maps.Map($('#map')[0], {
+              zoom: 15,
+              center: pos
+            });
+            var marker = new google.maps.Marker({
+              position: pos,
+              map: map
+            });
+            // infoWindow.setPosition(pos);
+            // infoWindow.setContent('Location found.');
             infoWindow.open(map);
             map.setCenter(pos);
           }, function() {
@@ -25,10 +27,6 @@
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map.getCenter());
         }
-        var marker = new google.maps.Marker({
-          position: pos,
-          map: map
-        });
       }
       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
