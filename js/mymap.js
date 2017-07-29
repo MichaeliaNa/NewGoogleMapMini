@@ -1,4 +1,6 @@
       var map, infoWindow;
+      var DEFAULT_ZOOM = 15;
+      var GOOGLE_API_KEY = 'AIzaSyCnjHGp7ASdYvTQhDRG2otqpH78Y95yS2Q';
       function initMap() {
         infoWindow = new google.maps.InfoWindow;
         // Try HTML5 geolocation.
@@ -9,17 +11,30 @@
               lng: position.coords.longitude
             };
             map = new google.maps.Map($('#map')[0], {
-              zoom: 15,
+              zoom: DEFAULT_ZOOM,
               center: pos
             });
             var marker = new google.maps.Marker({
               position: pos,
               map: map
             });
-            // infoWindow.setPosition(pos);
-            // infoWindow.setContent('Location found.');
             infoWindow.open(map);
             map.setCenter(pos);
+            $.ajax({
+              url : 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
+              data : {
+                'key' : GOOGLE_API_KEY,
+                'location' : pos.lat + ',' + pos.lng,
+                'type' : 'park',
+                'radius' : 500
+              },
+              success: function(data){
+                debugger;
+              },
+              failure: function(data){
+                debugger;
+              }
+          });
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
