@@ -21,11 +21,11 @@
             infoWindow.open(map);
             map.setCenter(pos);
             $.ajax({
-              url : 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
+              url : '/nearby_search',
               data : {
                 'key' : GOOGLE_API_KEY,
                 'location' : pos.lat + ',' + pos.lng,
-                'type' : 'park',
+                'type' : 'restaurant',
                 'radius' : 500
               },
               success: function(data){
