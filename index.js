@@ -23,10 +23,6 @@ app.get('/', function (req, res) {
 app.get('/nearby_search', function(req, nearby_res){
 	var radius = req.query.radius || 250;
 	var key = req.query.key || GOOGLE_API_KEY;
-	console.log(req.query.key);
-	console.log(req.query.location);
-	console.log(req.query.type);
-	console.log(radius);
 	var params = {
 		'key' : key,
 		'location' : req.query.location,
