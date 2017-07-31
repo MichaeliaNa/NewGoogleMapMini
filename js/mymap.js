@@ -1,8 +1,10 @@
-      var map, infoWindow;
-      var DEFAULT_ZOOM = 15;
-      var GOOGLE_API_KEY = 'AIzaSyCnjHGp7ASdYvTQhDRG2otqpH78Y95yS2Q';
-
       $(function(){
+        var map;
+        var infoWindow;
+        var service;
+        var DEFAULT_ZOOM = 15;
+        var GOOGLE_API_KEY = 'AIzaSyCnjHGp7ASdYvTQhDRG2otqpH78Y95yS2Q';
+
         function initMap() {
           infoWindow = new google.maps.InfoWindow;
           // Try HTML5 geolocation.
@@ -16,26 +18,51 @@
                 zoom: DEFAULT_ZOOM,
                 center: pos
               });
-              var marker = new google.maps.Marker({
+              var currLocation_marker = new google.maps.Marker({
                 position: pos,
-                map: map
+                map: map,
+                icon: {
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  scale: 3,
+                  fillColor: 'red'
+                }
               });
               map.setCenter(pos);
-              $.ajax({
-                url : '/nearby_search',
-                data : {
-                  'key' : GOOGLE_API_KEY,
-                  'location' : pos.lat + ',' + pos.lng,
-                  'type' : 'restaurant',
-                  'radius' : 500
-                },
-                success: function(data){
-                  debugger;
-                },
-                failure: function(data){
-                  debugger;
+
+              var params = {
+                location : pos,
+                radius : 500,
+                type : 'restaurant'
+              };
+              service = new google.maps.places.PlacesService(map);
+              service.nearbySearch(params, function(result, status){
+                if(status == google.maps.places.PlacesServiceStatus.OK){
+                  var infoWindow_content;
+                  var currSelected_infoWindow;
+                  _.each(result, function(place){
+                    var marker = new google.maps.Marker({
+                      position : place.geometry.location,
+                      map : map 
+                    }); 
+                    marker.addListener('click', function() {
+                      service.getDetails(place, function(result, status) {
+                        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                          console.error(status);
+                          return;
+                        }
+                        if(currSelected_infoWindow){
+                          currSelected_infoWindo.close();
+                        }
+                        infoWindow.setContent(result.name);
+                        infoWindow.open(map, marker);
+                        currSelected_infoWindo = infoWindow;
+                      });
+                    });
+                  });
+                }else{
+                  alert(status);
                 }
-            });
+              });
             }, function() {
               handleLocationError(true, infoWindow, map.getCenter());
             });
