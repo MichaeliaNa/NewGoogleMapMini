@@ -56,6 +56,7 @@
                         infoWindow.setContent(result.name);
                         infoWindow.open(map, marker);
                         currSelected_infoWindo = infoWindow;
+                        showPlaceDetailedInfo(place);
                       });
                     });
                   });
@@ -70,6 +71,20 @@
             // Browser doesn't support Geolocation
             handleLocationError(false, infoWindow, map.getCenter());
           }
+        }
+        function showPlaceDetailedInfo(place){
+          var params = {
+            placeId : place.place_id
+          };
+          service.getDetails(params, function(place, status){
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+              $('#hero-header-wrapper img').attr('src', place.photos[0].getUrl({'maxWidth': 408, 'maxheight': 407}));
+              $('.place-name').text(place.name);
+              $('.place-review-score').text(place.rating);
+              $('.place-type').text(place.types[0]);
+              $('#place-info-wrapper').show();
+            }
+          });
         }
         function handleLocationError(browserHasGeolocation, infoWindow, pos) {
           infoWindow.setPosition(pos);
