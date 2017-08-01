@@ -28,12 +28,28 @@
                 }
               });
               map.setCenter(pos);
-
-              var params = {
-                location : pos,
-                radius : 500,
-                type : 'restaurant'
-              };
+              var search_bar = new SearchBar(function(type){
+                var params = {
+                  location : pos,
+                  radius : 1500,
+                  type : type
+                };
+                getNearbyPlaces(params);
+              });
+              search_bar.addTo($('body'));
+              $('.place-info-visibility-toggle').on('click', function(){
+                $('#place-info-wrapper').toggleClass('visible');
+                $('#place-info-wrapper .triangle-icon').toggleClass('left');
+              });
+            }, function() {
+              handleLocationError(true, infoWindow, map.getCenter());
+            });
+          } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+          }
+        }
+        function getNearbyPlaces(params){
               service = new google.maps.places.PlacesService(map);
               service.nearbySearch(params, function(result, status){
                 if(status == google.maps.places.PlacesServiceStatus.OK){
@@ -64,17 +80,6 @@
                   alert(status);
                 }
               });
-            }, function() {
-              handleLocationError(true, infoWindow, map.getCenter());
-            });
-          } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
-          }
-          $('.place-info-visibility-toggle').on('click', function(){
-            $('#place-info-wrapper').toggleClass('visible');
-            $('#place-info-wrapper .triangle-icon').toggleClass('left');
-          });
         }
         function showPlaceDetailedInfo(place){
           var params = {
@@ -87,6 +92,7 @@
               $('.place-review-score').text(place.rating);
               $('.place-type').text(place.types[0]);
               $('#place-info-wrapper').addClass('visible');
+              $('#place-info-wrapper').addClass('is-active');
             }
           });
         }
