@@ -99,7 +99,11 @@
           };
           service.getDetails(params, function(place, status){
             if (status == google.maps.places.PlacesServiceStatus.OK) {
-              $('#hero-header-wrapper img').attr('src', place.photos[0].getUrl({'maxWidth': 408, 'maxheight': 407}));
+              if(place.photos){
+                $('#hero-header-wrapper img').attr('src', place.photos[0].getUrl({'maxWidth': 408, 'maxheight': 407}));
+              }else{
+                $('#hero-header-wrapper img').attr('src', 'mymap/css/imagesnotavailable.png');
+              }
               $('.place-name').text(place.name);
               $('.place-review-score').text(place.rating);
               $('.place-type').text(place.types[0]);
