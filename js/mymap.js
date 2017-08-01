@@ -103,8 +103,10 @@
               $('.place-name').text(place.name);
               $('.place-review-score').text(place.rating);
               $('.place-type').text(place.types[0]);
-              $('#place-info-wrapper').addClass('visible');
               $('#place-info-wrapper').addClass('is-active');
+              setTimeout(function(){
+                $('#place-info-wrapper').addClass('visible');
+              },100);
             }
           });
         }
